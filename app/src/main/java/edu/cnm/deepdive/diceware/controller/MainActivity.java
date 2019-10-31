@@ -41,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
           (view, position, passphrase) -> {
             // TODO Add code to pop up editor.
             Log.d("Passphrase click", passphrase.getKey());
+            PassphraseFragment fragment = PassphraseFragment.newInstance(passphrase);
+            fragment.setListener((p) -> {
+              waiting.setVisibility(View.VISIBLE);
+              viewModel.updatePassphrase(p);
+            });
+            fragment.show(getSupportFragmentManager(), fragment.getClass().getSimpleName());
           },
           (menu, position, passphrase) -> {
             Log.d("Passphrase context", passphrase.getKey());
@@ -78,12 +84,13 @@ public class MainActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
 
     FloatingActionButton fab = findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show();
-      }
+    fab.setOnClickListener(view -> {
+      PassphraseFragment fragment = PassphraseFragment.newInstance();
+      fragment.setListener((passphrase) -> {
+        waiting.setVisibility(View.VISIBLE);
+        viewModel.addPassphrase(passphrase);
+      });
+      fragment.show(getSupportFragmentManager(), fragment.getClass().getSimpleName());
     });
     waiting = findViewById(R.id.waiting);
     passphraseList = findViewById(R.id.keyword_list);
